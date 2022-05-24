@@ -17,8 +17,11 @@
 #define LIBPGTCL_H
 
 #include <tcl.h>
-
+#ifdef _WINDOWS
+__declspec( dllexport ) Pgtcl_Init(Tcl_Interp *interp);
+__declspec( dllexport ) Pgtcl_SafeInit(Tcl_Interp *interp);
+#else
 extern int	Pgtcl_Init(Tcl_Interp *interp);
 extern int	Pgtcl_SafeInit(Tcl_Interp *interp);
-
+#endif
 #endif   /* LIBPGTCL_H */

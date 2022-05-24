@@ -28,7 +28,9 @@ double pgtcl_tcl_version;
  *
  */
 
-DLLEXPORT int
+#ifdef _WINDOWS
+__declspec(dllexport)
+#endif
 Pgtcl_Init(Tcl_Interp *interp)
 {
 
@@ -364,7 +366,9 @@ Pgtcl_Init(Tcl_Interp *interp)
 	return TCL_OK;
 }
 
-DLLEXPORT int
+#ifdef _WINDOWS
+__declspec(dllexport)
+#endif
 Pgtcl_SafeInit(Tcl_Interp *interp)
 {
 	return Pgtcl_Init(interp);
