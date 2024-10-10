@@ -17,22 +17,22 @@
 
 extern void PgSetConnectionId(Tcl_Interp *interp, PGconn *conn);
 
-#define DRIVER_OUTPUT_PROTO ClientData cData, CONST84 char *buf, int bufSize, \
+#define DRIVER_OUTPUT_PROTO ClientData cData, const char *buf, int bufSize, \
 	int *errorCodePtr
 #define DRIVER_INPUT_PROTO ClientData cData, char *buf, int bufSize, \
 	int *errorCodePtr
 #define DRIVER_DEL_PROTO ClientData cData, Tcl_Interp *interp
 
-extern PGconn *PgGetConnectionId(Tcl_Interp *interp, CONST84 char *id,
+extern PGconn *PgGetConnectionId(Tcl_Interp *interp, const char *id,
 				  Pg_ConnectionId **);
 extern int	PgDelConnectionId(DRIVER_DEL_PROTO);
 extern int	PgOutputProc(DRIVER_OUTPUT_PROTO);
 extern int	PgInputProc(DRIVER_INPUT_PROTO);
-extern int	PgSetResultId(Tcl_Interp *interp, CONST84 char *connid,
+extern int	PgSetResultId(Tcl_Interp *interp, const char *connid,
 			  PGresult *res);
-extern PGresult *PgGetResultId(Tcl_Interp *interp, CONST84 char *id);
-extern void PgDelResultId(Tcl_Interp *interp, CONST84 char *id);
-extern int	PgGetConnByResultId(Tcl_Interp *interp, CONST84 char *resid);
+extern PGresult *PgGetResultId(Tcl_Interp *interp, const char *id);
+extern void PgDelResultId(Tcl_Interp *interp, const char *id);
+extern int	PgGetConnByResultId(Tcl_Interp *interp, const char *resid);
 extern void PgStartNotifyEventSource(Pg_ConnectionId * connid);
 extern void PgStopNotifyEventSource(Pg_ConnectionId * connid, char allevents);
 extern void PgNotifyTransferEvents(Pg_ConnectionId * connid);

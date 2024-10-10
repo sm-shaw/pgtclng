@@ -40,7 +40,7 @@ Pgtcl_Init(Tcl_Interp *interp)
 	 * with a Tcl 8.4 interpreter, so let 8.4 be the minimum version.
 	 */
 #ifdef USE_TCL_STUBS
-	if (Tcl_InitStubs(interp, "8.4", 0) == NULL)
+	if (Tcl_InitStubs(interp, "8.6-", 0) == NULL)
 		return TCL_ERROR;
 #endif
 

@@ -17,16 +17,13 @@
 /* See Get_ErrorLine() macro below. Define this so 8.6-built stubs-enabled
    extension will not crash if run under Tcl8.5.
 */
+#if (TCL_MAJOR_VERSION == 8 && TCL_MINOR_VERSION < 6)
 #define USE_INTERP_ERRORLINE
+#endif
 
 #include <tcl.h>
 
 #include "libpq-fe.h"
-
-/* Hack to deal with Tcl 8.4 const-ification without losing compatibility */
-#ifndef CONST84
-#define CONST84
-#endif
 
 #ifndef FALSE
 #define FALSE 0
@@ -135,148 +132,148 @@ typedef struct Pg_ConnectionId_s
 /* registered Tcl functions */
 /* **************************/
 extern int Pg_conndefaults(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_connect(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_disconnect(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_exec(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_execute(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_select(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_result(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_lo_open(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_lo_close(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_lo_read(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_lo_write(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_lo_lseek(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_lo_creat(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_lo_tell(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_lo_unlink(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_lo_import(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_lo_export(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_listen(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_sendquery(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_sendquery_params(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_sendquery_prepared(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_getresult(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_isbusy(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_blocking(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_cancelrequest(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_on_connection_loss(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_escape_string(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_quote(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_escape_bytea(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_unescape_bytea(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_transaction_status(
-  ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_parameter_status(
-  ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_exec_prepared(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_exec_params(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_notice_handler(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_result_callback(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 #ifdef HAVE_PQENCRYPTPASSWORD /* PostgreSQL >= 8.2.0 */
 extern int Pg_encrypt_password(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 #endif
 
 #ifdef HAVE_LO_TRUNCATE /* PostgreSQL >= 8.3.0 */
 extern int Pg_lo_truncate(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 #endif
 
 #ifdef HAVE_PQDESCRIBEPREPARED /* PostgreSQL >= 8.2.0 */
 extern int Pg_describe_cursor(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 extern int Pg_describe_prepared(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 #endif
 
 extern int Pg_backend_pid(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 extern int Pg_server_version(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 
 #ifdef HAVE_LO_TELL64  /* PostgreSQL >= 9.3.0 */
 extern int Pg_lo_tell64(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 extern int Pg_lo_lseek64(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 extern int Pg_lo_truncate64(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 #endif
 
 #ifdef HAVE_PQESCAPELITERAL /* PostgreSQL >= 9.0 */
 extern int Pg_escape_l_i(
-  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]);
+  ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]);
 #endif
 
 #endif   /* PGTCLCMDS_H */
