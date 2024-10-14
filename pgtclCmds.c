@@ -166,7 +166,7 @@ Pg_connect(ClientData cData, Tcl_Interp *interp, int objc,
 		const char **connValues;
 		const char **nextValue;
 		int			nKeywords;
-		int			listLen;
+		Tcl_Size		listLen;
 		int			i;
 		int			listIndex;
 		Tcl_Obj	   *connListElement;
@@ -417,7 +417,7 @@ Pg_encrypt_password(ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *con
 static int
 get_result_format(Tcl_Interp *interp, Tcl_Obj *resultListObj, int *resultFormat)
 {
-	int		   listLen;
+	Tcl_Size   listLen;
 	Tcl_Obj	   **objp;
 	int		i;
 
@@ -462,7 +462,7 @@ static int
 get_param_formats(Tcl_Interp *interp, Tcl_Obj *argFormatListObj,
 	int nParams, int *allParamsText, int **paramFormatsResult)
 {
-	int		listLen;
+	Tcl_Size	listLen;
 	Tcl_Obj	**objp;
 	int		*paramFormats;
 	int		i;
@@ -528,7 +528,7 @@ get_param_values(Tcl_Interp *interp, Tcl_Obj *const *objv,
 	const char *const **paramValues_result, int **paramLengths_result)
 {
 	int		i;
-	int		*paramLengths;
+	int	*paramLengths;
 	const char	**paramValues;
 
 	paramLengths = NULL;
@@ -570,7 +570,7 @@ static int
 get_param_types(Tcl_Interp *interp, Tcl_Obj *argTypeListObj,
 	int nParams, Oid **paramTypesResult)
 {
-	int		listLen;
+	Tcl_Size	listLen;
 	Tcl_Obj	**objp;
 	Oid *paramTypes;
 	int		i;
@@ -773,7 +773,7 @@ Pg_exec_prepared(ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const 
 	int		   allParamsText;
 	int 	   resultFormat;
 	int		   *paramFormats;
-	int		   *paramLengths;
+	int	   *paramLengths;
 	const char *const *paramValues;
 	int		   returnValue;
 
@@ -2289,7 +2289,7 @@ Pg_lo_open(ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]
 	int			fd;
 	char	   *connString;
 	char	   *modeString;
-	int			modeStringLen;
+	Tcl_Size		modeStringLen;
 
 	if (objc != 4)
 	{
@@ -3363,8 +3363,8 @@ Pg_listen(ClientData cData, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[])
 	PGresult   *result;
 	int			new;
 	char	   *connString;
-	int			callbackStrlen = 0;
-	int         origrelnameStrlen;
+	Tcl_Size    callbackStrlen = 0;
+	Tcl_Size   origrelnameStrlen;
 	Pg_notify_command  *notifCmd;
 	int			pass_pid = 0; /* Flag: -pid was used? */
 	int			arg_n = 1; /* Argument pointer */
@@ -4091,7 +4091,7 @@ Pg_on_connection_loss(ClientData cData, Tcl_Interp *interp, int objc,
 
 	if (objc > 2)
 	{
-		int         callbackStrLen;
+		Tcl_Size    callbackStrLen;
 		char	   *callbackStr;
 
 		/* there is probably a better way to do this, like incrementing
@@ -4155,8 +4155,8 @@ Pg_escape_string(ClientData cData, Tcl_Interp *interp, int objc,
 {
 	char	   *fromString;
 	char	   *toString;
-	int         fromStringLen;
-	int			toStringLen;
+	Tcl_Size    fromStringLen;
+	int	    toStringLen;
 	PGconn	   *conn;
 
 	if (objc == 3)
@@ -4212,7 +4212,7 @@ Pg_quote(ClientData cData, Tcl_Interp *interp, int objc,
 {
 	char	   *fromString;
 	char	   *toString;
-	int         fromStringLen;
+	Tcl_Size         fromStringLen;
 	int			toStringLen;
 	PGconn	   *conn;
 
@@ -4291,7 +4291,7 @@ Pg_escape_l_i(ClientData cData, Tcl_Interp *interp, int objc,
 {
 	char	   *fromString;
 	char	   *toString;
-	int         fromStringLen;
+	Tcl_Size   fromStringLen;
 	PGconn	   *conn;
 
 	if (objc != 3)
@@ -4363,7 +4363,7 @@ Pg_escape_bytea(ClientData cData, Tcl_Interp *interp, int objc,
 				 Tcl_Obj *const objv[])
 {
 	unsigned char	   *from_binary;
-	int         		from_len;
+	Tcl_Size       		from_len;
 	char			   *to_string;
 	size_t 				to_len;
 	PGconn			   *conn;
