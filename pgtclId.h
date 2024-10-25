@@ -22,10 +22,12 @@ extern void PgSetConnectionId(Tcl_Interp *interp, PGconn *conn);
 #define DRIVER_INPUT_PROTO ClientData cData, char *buf, int bufSize, \
 	int *errorCodePtr
 #define DRIVER_DEL_PROTO ClientData cData, Tcl_Interp *interp
+#define DRIVER_DEL_PROTO2 ClientData cData, Tcl_Interp *interp, int flags
 
 extern PGconn *PgGetConnectionId(Tcl_Interp *interp, const char *id,
 				  Pg_ConnectionId **);
 extern int	PgDelConnectionId(DRIVER_DEL_PROTO);
+extern int	PgDelConnectionId2(DRIVER_DEL_PROTO2);
 extern int	PgOutputProc(DRIVER_OUTPUT_PROTO);
 extern int	PgInputProc(DRIVER_INPUT_PROTO);
 extern int	PgSetResultId(Tcl_Interp *interp, const char *connid,

@@ -191,8 +191,12 @@ PgGetHandleProc(ClientData instanceData, int direction,
 
 Tcl_ChannelType Pg_ConnType = {
 	"pgsql",					/* channel type */
-	NULL,						/* blockmodeproc */
+	(Tcl_ChannelTypeVersion)TCL_CHANNEL_VERSION_5,      /* Version. */
+        #if TCL_MAJOR_VERSION < 9
 	PgDelConnectionId,			/* closeproc */
+        #else
+        TCL_CLOSE2PROC,
+        #endif
 	PgInputProc,				/* inputproc */
 	PgOutputProc,				/* outputproc */
 	NULL,						/* SeekProc, Not used */
@@ -200,7 +204,12 @@ Tcl_ChannelType Pg_ConnType = {
 	NULL,						/* GetOptionProc, Not used */
 	PgWatchProc,				/* WatchProc, must be defined */
 	PgGetHandleProc,			/* GetHandleProc, must be defined */
-	NULL						/* Close2Proc, Not used */
+	PgDelConnectionId2,			/* Close2Proc */
+	NULL,  /* Set blocking/nonblocking mode.*/						
+        NULL, /* FlushProc. Must be NULL as per Tcl docs */
+        NULL, /* HandlerProc. Only valid for stacked channels */
+        NULL, /* WideSeekProc. */
+        NULL,
 };
 
 /*
@@ -285,6 +294,16 @@ PgGetConnectionId(Tcl_Interp *interp, const char *id,
 }
 
 
+int
+PgDelConnectionId2(DRIVER_DEL_PROTO2)
+{
+	 Pg_ConnectionId *connid;
+	 connid = (Pg_ConnectionId *) cData;
+        if ((flags&(TCL_CLOSE_READ|TCL_CLOSE_WRITE))==0) {
+        return PgDelConnectionId(connid, interp);
+    }
+    return EINVAL;
+}
 /*
  * Remove a connection Id from the hash table and
  * close all portals the user forgot.
