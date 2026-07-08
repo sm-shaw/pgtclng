@@ -20,6 +20,11 @@
 
 #include <string.h>
 #include <errno.h>
+#ifndef _WIN32
+#include <unistd.h>
+#else
+#include <winsock2.h>
+#endif
 
 #include "pgtclCmds.h"
 #include "pgtclId.h"
@@ -244,7 +249,53 @@ PgSetConnectionId(Tcl_Interp *interp, PGconn *conn)
 
 	sprintf(connid->id, "pgsql%d", PQsocket(conn));
 
-	connid->notifier_channel = Tcl_MakeTcpClientChannel((ClientData) PQsocket(conn));
+	/*
+	 * Wrap the libpq connection socket in a Tcl channel so the async-notify
+	 * event source (see PgStartNotifyEventSource) can watch it for readable
+	 * data.  Tcl's TCP channel driver takes ownership of the descriptor and
+	 * close()s it when the channel is unregistered and libpq independently
+	 * close()s the same descriptor in PQfinish().  In a single-threaded
+	 * program, the duplicate close is harmless as the second one just fails
+	 * with EBADF, but HammerDB runs each virtual user in its own thread by
+	 * sharing a single process-wide file-descriptor table.  Another thread can
+	 * then be provided the same descriptor number we just freed, in the window
+	 * between libpq's close() and Tcl's close(), so the second close() tears
+	 * down an unrelated live socket, which produces "Bad file descriptor" error
+	 * or such, and the probability of this increases as the virtual-user count
+	 * grows.  So here we keep the two owners independent by giving Tcl a private
+	 * dup() of the descriptor so both libpq and Tcl close their own distinct fd
+	 * exactly once, so no thread can ever close another thread's socket.
+	 */
+#ifndef _WIN32
+	{
+		int			notifier_fd = dup(PQsocket(conn));
+
+		connid->notifier_channel = Tcl_MakeTcpClientChannel(
+			(ClientData) (notifier_fd >= 0 ? notifier_fd : PQsocket(conn)));
+	}
+#else
+	{
+		/*
+		 * Use WSADuplicateSocket()/WSASocket() pair to obtain an independent
+		 * SOCKET that refers to the same underlying connection. As with the
+		 * POSIX dup() above, this provides Tcl its own descriptor to closesocket(),
+		 * so the two owners never close the same SOCKET value and no thread can
+		 * tear down another thread's socket.  We fall back to the raw socket if
+		 * duplication fails.
+		 */
+		SOCKET		pqsock = (SOCKET) PQsocket(conn);
+		SOCKET		notifier_sock = INVALID_SOCKET;
+		WSAPROTOCOL_INFO protoInfo;
+
+		if (pqsock != INVALID_SOCKET &&
+			WSADuplicateSocket(pqsock, GetCurrentProcessId(), &protoInfo) == 0)
+			notifier_sock = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
+									  FROM_PROTOCOL_INFO, &protoInfo, 0, 0);
+
+		connid->notifier_channel = Tcl_MakeTcpClientChannel(
+			(ClientData) (notifier_sock != INVALID_SOCKET ? notifier_sock : pqsock));
+	}
+#endif
 	/* Code  executing  outside  of  any Tcl interpreter can call
        Tcl_RegisterChannel with interp as NULL, to indicate  that
        it  wishes  to  hold  a  reference to this channel. Subse-
@@ -365,20 +416,22 @@ PgDelConnectionId(DRIVER_DEL_PROTO)
 	connid->conn = NULL;
 
 	/*
-	 * Kill the notifier channel, too.	We must not do this until after
-	 * we've closed the libpq connection, because Tcl will try to close
-	 * the socket itself!
+	 * Kill the notifier channel, too.	Because the channel now wraps a
+	 * private duplicate of the connection socket (see PgSetConnectionId), the
+	 * order relative to PQfinish() no longer affects fd safety as each owner
+	 * closes its own distinct descriptor.  We still unregister it here so the
+	 * duplicated descriptor and channel state are released promptly on
+	 * pg_disconnect.
 	 *
 	 * XXX Unfortunately, while this works fine if we are closing due to
 	 * explicit pg_disconnect, all Tcl versions through 8.4.1 dump core if
 	 * we try to do it during interpreter shutdown.  Not clear why. For
 	 * now, we kill the channel during pg_disconnect, but during interp
 	 * shutdown we just accept leakage of the (fairly small) amount of
-	 * memory taken for the channel state representation. (Note we are not
-	 * leaking a socket, since libpq closed that already.) We tell the
-	 * difference between pg_disconnect and interpreter shutdown by
-	 * testing for interp != NULL, which is an undocumented but apparently
-	 * safe way to tell.
+	 * memory taken for the channel state representation (plus the duplicated
+	 * descriptor).  We tell the difference between pg_disconnect and
+	 * interpreter shutdown by testing for interp != NULL, which is an
+	 * undocumented but apparently safe way to tell.
 	 */
 	if (connid->notifier_channel != NULL && interp != NULL)
 		Tcl_UnregisterChannel(NULL, connid->notifier_channel);
