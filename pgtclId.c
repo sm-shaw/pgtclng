@@ -290,7 +290,8 @@ PgSetConnectionId(Tcl_Interp *interp, PGconn *conn)
 		if (pqsock != INVALID_SOCKET &&
 			WSADuplicateSocket(pqsock, GetCurrentProcessId(), &protoInfo) == 0)
 			notifier_sock = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
-									  FROM_PROTOCOL_INFO, &protoInfo, 0, 0);
+									  FROM_PROTOCOL_INFO, &protoInfo, 0,
+									  WSA_FLAG_OVERLAPPED);
 
 		connid->notifier_channel = Tcl_MakeTcpClientChannel(
 			(ClientData) (notifier_sock != INVALID_SOCKET ? notifier_sock : pqsock));
