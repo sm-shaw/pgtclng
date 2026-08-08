@@ -29,7 +29,7 @@ dlllflags = $(lflags) -entry:_DllMainCRTStartup -dll
 
 CLFLAGS = /c -Ob2 -favor:blend /MT /W3 /nologo /D_CRT_SECURE_NO_WARNINGS -DUSE_TCL_STUBS -DPACKAGE_NAME=\"pgtcl\" -DPACKAGE_VERSION=\"2.1.1.1\"
 
-baselibs   =  "$(TCL_LIBRARY)/tclstub.lib" "$(LIBDIR)/libpq.lib"
+baselibs   =  "$(TCL_LIBRARY)/tclstub.lib" "$(LIBDIR)/libpq.lib" ws2_32.lib
 
 DIR_SRC = ..
 
